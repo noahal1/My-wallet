@@ -7,10 +7,10 @@ import trophy from '@images/misc/trophy.png'
     <VCardText>
       <div class="mb-2">
         <h5 class="text-h5">
-          Congratulations John! <span class="text-high-emphasis">🎉</span>
+          Congratulations Noah! <span class="text-high-emphasis">🎉</span>
         </h5>
         <div class="text-body-1">
-          Best seller of the month
+          
         </div>
       </div>
       <h4 class="text-h4 text-primary">
@@ -31,7 +31,7 @@ import trophy from '@images/misc/trophy.png'
     />
   </VCard>
 </template>
-
+  
 <style lang="scss">
 .v-card .trophy {
   position: absolute;
