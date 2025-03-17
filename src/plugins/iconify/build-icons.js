@@ -42,6 +42,13 @@ const sources = {
         // Iconify JSON file (@iconify/json is a package name, /json/ is directory where files are, then filename)
         require.resolve('@iconify-json/ri/icons.json'),
         {
+            filename: require.resolve('@iconify-json/mdi/icons.json'),
+            icons: [
+                'language-typescript',
+                'language-javascript',
+            ],
+        },
+        {
             filename: require.resolve('@iconify-json/bxl/icons.json'),
             icons: [
                 'facebook',

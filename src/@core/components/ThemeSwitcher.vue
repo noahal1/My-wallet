@@ -1,5 +1,5 @@
 <script setup>
-import { useTheme } from 'vuetify'
+import { useConfigStore } from '@core/stores/config'
 
 const props = defineProps({
   themes: {
@@ -8,36 +8,49 @@ const props = defineProps({
   },
 })
 
-const {
-  name: themeName,
-  global: globalTheme,
-} = useTheme()
-
-const {
-  state: currentThemeName,
-  next: getNextThemeName,
-  index: currentThemeIndex,
-} = useCycleList(props.themes.map(t => t.name), { initialValue: themeName })
-
-const changeTheme = () => {
-  globalTheme.name.value = getNextThemeName()
-}
+const configStore = useConfigStore()
+const selectedItem = ref([configStore.theme])
 
 // Update icon if theme is changed from other sources
-watch(() => globalTheme.name.value, val => {
-  currentThemeName.value = val
-})
+watch(() => configStore.theme, () => {
+  selectedItem.value = [configStore.theme]
+}, { deep: true })
 </script>
 
 <template>
-  <IconBtn @click="changeTheme">
-    <VIcon :icon="props.themes[currentThemeIndex].icon" />
+  <IconBtn>
+    <VIcon :icon="props.themes.find(t => t.name === configStore.theme)?.icon" />
+
     <VTooltip
       activator="parent"
       open-delay="1000"
       scroll-strategy="close"
     >
-      <span class="text-capitalize">{{ currentThemeName }}</span>
+      <span class="text-capitalize">{{ configStore.theme }}</span>
     </VTooltip>
+    <VMenu
+      activator="parent"
+      offset="15px"
+      width="160"
+    >
+      <VList
+        v-model:selected="selectedItem"
+        mandatory
+      >
+        <VListItem
+          v-for="{ name, icon } in props.themes"
+          :key="name"
+          :value="name"
+          :prepend-icon="icon"
+          color="primary"
+
+          @click="() => { configStore.theme = name }"
+        >
+          <VListItemTitle class="text-capitalize">
+            {{ name }}
+          </VListItemTitle>
+        </VListItem>
+      </VList>
+    </VMenu>
   </IconBtn>
 </template>

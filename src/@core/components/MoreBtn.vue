@@ -18,8 +18,8 @@ const props = defineProps({
 <template>
   <IconBtn>
     <VIcon
-      :size="iconSize"
       icon="ri-more-2-line"
+      :size="iconSize"
     />
 
     <VMenu

@@ -66,8 +66,8 @@
   }
 
   &.custom-checkbox,
-  &.custom-radio {
-    .v-input__control {
+  &.custom-radio{
+    .v-input__control{
       grid-area: none;
     }
   }
@@ -91,8 +91,8 @@
     position: absolute;
     z-index: 1;
     color: rgba(var(--v-theme-on-surface), var(--v-disabled-opacity)) !important;
-    inset-block-start: 0.5rem;
-    inset-inline-end: 0.5rem;
+    inset-block-start: 0.8rem;
+    inset-inline-end: 0.6rem;
 
     .v-btn__overlay {
       display: none;

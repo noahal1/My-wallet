@@ -1,71 +1,110 @@
-<script>
-import VerticalNav from '@layouts/components/VerticalNav.vue'
-import { useDisplay } from 'vuetify'
+<script setup>
+import { VerticalNav } from '@layouts/components'
+import { useLayoutConfigStore } from '@layouts/stores/config'
 
-export default defineComponent({
-  setup(props, { slots }) {
-    const isOverlayNavActive = ref(false)
-    const isLayoutOverlayVisible = ref(false)
-    const toggleIsOverlayNavActive = useToggle(isOverlayNavActive)
-    const route = useRoute()
-    const { mdAndDown } = useDisplay()
-
-
-    // ℹ️ This is alternative to below two commented watcher
-    // We want to show overlay if overlay nav is visible and want to hide overlay if overlay is hidden and vice versa.
-    syncRef(isOverlayNavActive, isLayoutOverlayVisible)
-    
-    return () => {
-      // 👉 Vertical nav
-      const verticalNav = h(VerticalNav, { isOverlayNavActive: isOverlayNavActive.value, toggleIsOverlayNavActive }, {
-        'nav-header': () => slots['vertical-nav-header']?.({ toggleIsOverlayNavActive }),
-        'before-nav-items': () => slots['before-vertical-nav-items']?.(),
-        'default': () => slots['vertical-nav-content']?.(),
-        'after-nav-items': () => slots['after-vertical-nav-items']?.(),
-      })
-
-
-      // 👉 Navbar
-      const navbar = h('header', { class: ['layout-navbar navbar-blur'] }, [
-        h('div', { class: 'navbar-content-container' }, slots.navbar?.({
-          toggleVerticalOverlayNavActive: toggleIsOverlayNavActive,
-        })),
-      ])
-
-      const main = h('main', { class: 'layout-page-content' }, h('div', { class: 'page-content-container' }, slots.default?.()))
-
-
-      // 👉 Footer
-      const footer = h('footer', { class: 'layout-footer' }, [
-        h('div', { class: 'footer-content-container' }, slots.footer?.()),
-      ])
-
-
-      // 👉 Overlay
-      const layoutOverlay = h('div', {
-        class: ['layout-overlay', { visible: isLayoutOverlayVisible.value }],
-        onClick: () => { isLayoutOverlayVisible.value = !isLayoutOverlayVisible.value },
-      })
-
-      return h('div', {
-        class: [
-          'layout-wrapper layout-nav-type-vertical layout-navbar-static layout-footer-static layout-content-width-fluid',
-          mdAndDown.value && 'layout-overlay-nav',
-          route.meta.layoutWrapperClasses,
-        ],
-      }, [
-        verticalNav,
-        h('div', { class: 'layout-content-wrapper' }, [
-          navbar,
-          main,
-          footer,
-        ]),
-        layoutOverlay,
-      ])
-    }
+const props = defineProps({
+  navItems: {
+    type: null,
+    required: true,
+  },
+  verticalNavAttrs: {
+    type: Object,
+    required: false,
+    default: () => ({}),
   },
 })
+
+const { width: windowWidth } = useWindowSize()
+const configStore = useLayoutConfigStore()
+const isOverlayNavActive = ref(false)
+const isLayoutOverlayVisible = ref(false)
+const toggleIsOverlayNavActive = useToggle(isOverlayNavActive)
+
+// ℹ️ This is alternative to below two commented watcher
+
+// We want to show overlay if overlay nav is visible and want to hide overlay if overlay is hidden and vice versa.
+syncRef(isOverlayNavActive, isLayoutOverlayVisible)
+
+// })
+
+// ℹ️ Hide overlay if user open overlay nav in <md and increase the window width without closing overlay nav
+watch(windowWidth, () => {
+  if (!configStore.isLessThanOverlayNavBreakpoint && isLayoutOverlayVisible.value)
+    isLayoutOverlayVisible.value = false
+})
+
+const verticalNavAttrs = computed(() => {
+  const vNavAttrs = toRef(props, 'verticalNavAttrs')
+
+  const {
+    wrapper: verticalNavWrapper,
+    wrapperProps: verticalNavWrapperProps,
+    ...additionalVerticalNavAttrs
+  } = vNavAttrs.value
+
+  
+  return {
+    verticalNavWrapper,
+    verticalNavWrapperProps,
+    additionalVerticalNavAttrs,
+  }
+})
 </script>
+
+<template>
+  <div
+    class="layout-wrapper"
+    :class="configStore._layoutClasses"
+  >
+    <component
+      :is="verticalNavAttrs.verticalNavWrapper ? verticalNavAttrs.verticalNavWrapper : 'div'"
+      v-bind="verticalNavAttrs.verticalNavWrapperProps"
+      class="vertical-nav-wrapper"
+    >
+      <VerticalNav
+        :is-overlay-nav-active="isOverlayNavActive"
+        :toggle-is-overlay-nav-active="toggleIsOverlayNavActive"
+        :nav-items="props.navItems"
+        v-bind="{ ...verticalNavAttrs.additionalVerticalNavAttrs }"
+      >
+        <template #nav-header>
+          <slot name="vertical-nav-header" />
+        </template>
+        <template #before-nav-items>
+          <slot name="before-vertical-nav-items" />
+        </template>
+      </VerticalNav>
+    </component>
+    <div class="layout-content-wrapper">
+      <header
+        class="layout-navbar"
+        :class="[{ 'navbar-blur': configStore.isNavbarBlurEnabled }]"
+      >
+        <div class="navbar-content-container">
+          <slot
+            name="navbar"
+            :toggle-vertical-overlay-nav-active="toggleIsOverlayNavActive"
+          />
+        </div>
+      </header>
+      <main class="layout-page-content">
+        <div class="page-content-container">
+          <slot />
+        </div>
+      </main>
+      <footer class="layout-footer">
+        <div class="footer-content-container">
+          <slot name="footer" />
+        </div>
+      </footer>
+    </div>
+    <div
+      class="layout-overlay"
+      :class="[{ visible: isLayoutOverlayVisible }]"
+      @click="() => { isLayoutOverlayVisible = !isLayoutOverlayVisible }"
+    />
+  </div>
+</template>
 
 <style lang="scss">
 @use "@configured-variables" as variables;
@@ -137,7 +176,7 @@ export default defineComponent({
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s ease-in-out;
-    will-change: transform;
+    will-change: opacity;
 
     &.visible {
       opacity: 1;
@@ -147,7 +186,9 @@ export default defineComponent({
 
   // Adjust right column pl when vertical nav is collapsed
   &.layout-vertical-nav-collapsed .layout-content-wrapper {
-    padding-inline-start: variables.$layout-vertical-nav-collapsed-width;
+    @media screen and (min-width: 1280px) {
+      padding-inline-start: variables.$layout-vertical-nav-collapsed-width;
+    }
   }
 
   // 👉 Content height fixed

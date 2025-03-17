@@ -30,7 +30,7 @@
           </g>
         </svg>
       </div>
-      <div class="loading">
+      <div class=" loading">
         <div class="effect-1 effects"></div>
         <div class="effect-2 effects"></div>
         <div class="effect-3 effects"></div>
@@ -40,8 +40,10 @@
   <script type="module" src="/src/main.js"></script>
   <script>
     const loaderColor = localStorage.getItem('materio-initial-loader-bg') || '#FFFFFF'
-    const primaryColor = localStorage.getItem('materio-initial-loader-color') || '#9155FD'
+    const primaryColor = localStorage.getItem('materio-initial-loader-color') || '#a169ff'
 
+    if (loaderColor)
+      document.documentElement.style.setProperty('--initial-loader-bg', loaderColor)
     if (loaderColor)
       document.documentElement.style.setProperty('--initial-loader-bg', loaderColor)
 
