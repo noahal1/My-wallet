@@ -1,6 +1,6 @@
 <script setup>
-import { useTheme } from 'vuetify'
 import { hexToRgb } from '@core/utils/colorConverter'
+import { useTheme } from 'vuetify'
 
 const vuetifyTheme = useTheme()
 
@@ -26,7 +26,7 @@ const options = computed(() => {
     },
     stroke: {
       width: 2,
-      colors: [currentTheme.value.surface]
+      colors: [currentTheme.value.surface],
     },
     legend: { show: false },
     grid: {
@@ -62,8 +62,8 @@ const options = computed(() => {
         show: true,  
         style: {
           colors: disabledColor,
-          fontSize: '12px'
-        }
+          fontSize: '12px',
+        },
       },
       crosshairs: { opacity: 0 },
       axisTicks: { show: false },
@@ -89,7 +89,7 @@ const options = computed(() => {
         breakpoint: 300,
         options: { plotOptions: { bar: { columnWidth: '45%' } } },
       },
-    ]]
+    ]],
   }
 })
 
@@ -102,7 +102,7 @@ const series = [{
     700,   
     950,   
     1500,  
-    1800   
+    1800,   
   ],
 }]
 </script>
@@ -136,7 +136,10 @@ const series = [{
         </p>
       </div>
 
-      <VBtn block color="primary">
+      <VBtn
+        block
+        color="primary"
+      >
         消费明细
       </VBtn>
     </VCardText>

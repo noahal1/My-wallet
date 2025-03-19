@@ -1,5 +1,5 @@
 <script setup>
-import trophy from '@images/misc/trophy.png';
+import trophy from '@images/misc/trophy.png'
 </script>
 
 <template>
@@ -17,7 +17,7 @@ import trophy from '@images/misc/trophy.png';
         ￥42.8k
       </h4>
       <div class="text-body-1 mb-2">
-         of target <span class="text-high-emphasis">🚀</span>
+        of target <span class="text-high-emphasis">🚀</span>
       </div>
       <VBtn size="small">
         查看详情

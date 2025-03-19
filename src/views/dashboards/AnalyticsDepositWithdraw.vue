@@ -1,13 +1,8 @@
 <script setup>
 import americanBank from '@images/logos/american-bank.png'
-import aws from '@images/logos/aws.png'
 import citiBank from '@images/logos/citi-bank.png'
-import digitalOcean from '@images/logos/digital-ocean.png'
-import github from '@images/logos/github.png'
-import google from '@images/logos/google.png'
 import gumroad from '@images/logos/gumroad.png'
 import mastercardLabel from '@images/logos/mastercard-label.png'
-import slack from '@images/logos/slack.png'
 import stripe from '@images/logos/stripe.png'
 
 const deposits = [
@@ -48,14 +43,12 @@ const withdraws = [
     title: '企业合作支出',
     subtitle: '技术解决方案',
     amount: '-$28,500',
-    //...
   },
   {
     title: '项目奖金',
     subtitle: 'Q4季度奖金',
     amount: '-$15,200',
-    //...
-  }
+  },
 ]
 </script>
 
@@ -153,19 +146,19 @@ const withdraws = [
               <VListItemSubtitle class="text-body-1">
                 {{ withdraw.subtitle }}
               </VListItemSubtitle>
-<template #append>
-  <VListItemAction>
-    <span class="text-error font-weight-medium">
-      {{ withdraw.amount }}
-    </span>
-  </VListItemAction>
-</template>
-</VListItem>
-</VList>
-</VCardText>
-</VCol>
-</VRow>
-</VCard>
+              <template #append>
+                <VListItemAction>
+                  <span class="text-error font-weight-medium">
+                    {{ withdraw.amount }}
+                  </span>
+                </VListItemAction>
+              </template>
+            </VListItem>
+          </VList>
+        </VCardText>
+      </VCol>
+    </VRow>
+  </VCard>
 </template>
 
 <style lang="scss" scoped>

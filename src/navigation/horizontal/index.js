@@ -4,6 +4,7 @@ export default [
     to: { name: 'dashboard' },
     icon: { icon: 'ri-dashboard-line' },
   },
+
   {
     title: 'Second page',
     to: { name: 'second-page' },
